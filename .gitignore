@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+*.pdf
+style/*/pdfs/
+style/*/text/
+style/*/work/
+data/
+results/
+*.zip
+.env
+*.key
