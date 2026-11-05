@@ -1,0 +1,6 @@
+{
+  "_meta": {"generated_by": "code/make_numbers.py", "generated_utc": "", "note": "never edit by hand; regenerate from results/"},
+  "n_records_total": {"value": 0, "source": "data/processed/tidy.csv"},
+  "n_sources": {"value": 0, "source": "HOLDOUT/split.json#n_groups"},
+  "mae_holdout_b0": {"value": 0.0, "fmt": ".3f", "unit": "", "source": "results/holdout_metrics.csv#B0/MAE"}
+}

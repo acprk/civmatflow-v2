@@ -9,8 +9,8 @@ tools: Read, Grep, Glob, Bash, Write
 ## 步骤
 1. 读 review/ 下的 R1_theory.md、R2_experiment.md、R3_domain.md、R4_writing.md、R5_adversary.md。
 2. 合并重复意见；对每条 major 回到稿件/数据/代码核实：成立 / 部分成立 / 不成立（附证据位置）。审稿人也可能错。
-3. 按期刊口径（参考 /home/luck/xzy/0970project/venue/ 下的期刊画像，若存在）决定结论。
-4. 生成必改清单：每条含来源审稿人、问题、修改方式、所需新实验或新推导、工作量估计、优先级。
+3. 按期刊口径（参考 `{{CIVMAT2_PROJECT}}/venue/` 下的期刊画像与 theory_depth.md，若存在）决定结论。
+4. 生成必改清单：每条含来源审稿人、问题、修改方式、所需新实验或新推导、工作量估计、优先级；需要新留出的明确写"不得复用已消费留出"。
 
 ## 输出（review/meta.md）
 Decision + 理由；核实表；必改清单；可选改进；对作者的一段编辑信。

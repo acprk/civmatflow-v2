@@ -1,0 +1,9 @@
+## DIRECTION BRIEF: C<#> — <方向名>
+Target quantity: <…>
+Baseline(s) and where they are reported: <model, DOI, eq. numbers, reported error>
+Public data already downloaded (read-only): {{PROJECT_ROOT}}/data/raw/<slug>/ (licence: …; PROVENANCE.md)
+Frozen hold-out (if any): {{PROJECT_ROOT}}/D<k>_<slug>/HOLDOUT/ — DO NOT read holdout rows; use load_calibration()
+Known failure regions from G1: <…>
+Closest prior work (DOIs) and why we are different: <…>
+Kill list (what would close this direction): 1. … 2. … 3. …
+Deliverables this iteration: <…>

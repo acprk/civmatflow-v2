@@ -9,12 +9,15 @@ description: civmatflow v2 V1——候选方向打分与 G0/G0.5 闸门：公开
 期刊频次与增长｜公开数据质量（实际下载、许可、条数、是否原始试验、是否有组内设计对比）｜本机可算｜理论空间｜baseline 清晰度与可复现性｜拥挤度（纯 ML 扣分）｜**近邻全文可合法读取**｜与用户背景衔接。
 
 ## 闸门
-- **G0**：数据下载到 `data/raw/<slug>/`，写 PROVENANCE.md（URL/DOI/许可/条数/变量/原始或二手/已知问题/sha256）。登录墙不绕过；影子图书馆禁用。
-- **G0.5 抢先扫描（先于 G1）**：近 24 个月论文、预印本、Zenodo/figshare/MDPI、被引文献、作者后续工作；关键竞品读全文。已有等价工作 → 关闭。
-- **可检测性预估**：来源间 ICC；若 >~0.6 且无组内设计对比 → 改走组内对比或模拟真值路线，否则关闭。
+- **G0**：数据下载到 `{{CIVMAT2_PROJECT}}/data/raw/<slug>/`，写 PROVENANCE.md（模板 `civmat2 template PROVENANCE`：URL/DOI/许可/条数/变量/原始或二手/已知问题/sha256）。登录墙不绕过；影子图书馆禁用。
+- **G0.5 抢先扫描（先于 G1）**：近 24 个月论文、预印本、Zenodo/figshare/MDPI、被引文献、作者后续工作；关键竞品读全文（`civmat2 fetch`）。已有等价工作 → 关闭。
+- **可检测性预估**：来源间 ICC（有 baseline 预测时 `civmat2 residuals … --out results/` 直接给 ICC(1)+CI 与判定）；若 >~0.6 且无组内设计对比 → 改走组内对比或模拟真值路线，否则关闭。
 
 ## 收割法（C4 经验）
-读障碍不读主题：近期 OA 论文的局限/未来工作、RILEM TC 报告的开放问题、多实验室循环试验数据（同材料多实验室=天然组内对比）。每张候选卡写：目标量、SOTA+出处、数据（URL/许可/条数/组内设计）、模拟路线、机理设想、可检测性、抢先结果、期刊频次、先杀清单。
+读障碍不读主题：近期 OA 论文的局限/未来工作、RILEM TC 报告的开放问题、多实验室循环试验数据（同材料多实验室=天然组内对比）。每张候选卡（模板 `civmat2 template DIRECTION_CARD`）写：目标量、SOTA+出处、数据（URL/许可/条数/组内设计）、模拟路线、机理设想、可检测性、抢先结果、期刊频次、先杀清单。
+
+## 编排
+多候选并行：`Workflow({scriptPath: "{{CIVMAT2_HOME}}/workflows/civmat2-direction.js", args: {home: "{{CIVMAT2_HOME}}", project: "{{CIVMAT2_PROJECT}}", candidates: [{key, brief}, …], out_dir}})`（scout 过闸 → adversary 补刀 → 排序；需用户同意多 agent 编排），否则用 Agent 工具手动派 civmat-scout 与 civrev-adversary。
 
 ## 产出
-`DIRECTION.md` 或 `codex/C#/brief.txt`；关闭写进 `codex/STATUS.md` 与设计稿 §10。
+`DIRECTION.md`（方向工作区）或 `{{CIVMAT2_PROJECT}}/codex/C#/brief.txt`；关闭写进 `{{CIVMAT2_PROJECT}}/codex/STATUS.md` 与设计稿 §10。

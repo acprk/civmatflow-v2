@@ -1,0 +1,2 @@
+claim_id,section,claim_text,evidence_file,figure_or_table,numbers_keys,required_hedging,status
+C1,Abstract,"<主张>",results/holdout_metrics.csv,Table 3,"mae_holdout_m1;mae_holdout_b0","within the tested range of …",draft

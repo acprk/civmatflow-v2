@@ -1,0 +1,6 @@
+## REVIEWER FEEDBACK — iteration <N> (Claude, <date>)
+ACCEPTED: <what stands>
+REJECTED: <what does not, with the evidence>
+NEXT ROUND — single focus: <one thing>
+DEAD-END CRITERION for next round: <if X, declare DEAD-END>
+Reminders: hold-out hygiene (5a), identifiability before fitting, parity is parity.

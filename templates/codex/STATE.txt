@@ -1,0 +1,6 @@
+## STATE — C<#> as of iteration <N>
+DONE: <…>
+DEAD (step, data, why): <…>
+OPEN CANDIDATES: <…>
+NEXT: <…>
+FILES: <paths of frozen artefacts, scripts, results>

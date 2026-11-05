@@ -4,8 +4,14 @@ __pycache__/
 style/*/pdfs/
 style/*/text/
 style/*/work/
+style/*/blindtest*.md
 data/
 results/
 *.zip
+*.zip.sha256
 .env
 *.key
+.civmat2.env
+.refcheck_cache.json
+submit/
+_pkg07/

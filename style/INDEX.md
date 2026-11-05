@@ -1,6 +1,6 @@
 # 期刊×领域写作风格库索引
 
-由 `civmat-style-distiller` 生成；每行一个 key，对应 `style/<key>/` 语料与 `../<key>-writer.md` 写作 agent。
+由 `civmat-style-distiller` 生成；每行一个 key，对应仓库 `style/<key>/`（STYLE.md、phrasebank.md、style_check.py、stats.json、CORPUS.md；pdfs/ 与 text/ 只存本地）与 `agents/<key>-writer.md` 写作 agent。检查器统一入口：`civmat2 style <key> DRAFT`。
 已有的非土木风格 agent：`gao-style-writer`（Gao 计算代数）、`www-writing-agent`（WWW）。
 
 | key | 期刊 | 领域 | A/B 层篇数 | GS 盲测 | 日期 |

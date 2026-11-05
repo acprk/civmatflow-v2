@@ -1,0 +1,4 @@
+# All civmatflow v2 tools run on the Python standard library. These are optional:
+python-docx>=1.1      # read .docx drafts in style_check.py / number_check.py (zip fallback exists)
+pymupdf>=1.24         # pdf2cards.py when `pdftotext` (poppler-utils) is not installed
+reportlab>=4.0        # only for the pdf2cards step of tests/smoke_test.sh

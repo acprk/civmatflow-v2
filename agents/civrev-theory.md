@@ -11,7 +11,7 @@ tools: Read, Grep, Glob, Bash, WebFetch, WebSearch, Write
 2. 找出最接近的 3 篇已发表文献（OpenAlex/Semantic Scholar/Crossref 检索，给 DOI），逐项对比：控制方程、假设、参数个数、适用范围。判断是"结构性新机理 / 增量修正 / 平行推广 / 参数重拟合"。
 3. 逐条推导复核：量纲、极限情形（t→0、t→∞、体积分数→0/1、尺寸→0/∞）、单调性与凸性、热力学一致性（耗散非负、Onsager）、边界条件、与经典模型的退化关系。用 sympy/数值例检查至少 3 个关键式，脚本存到 review 目录。
 4. 参数是否可辨识：自由参数数 vs 数据信息量；是否存在拟合参数吸收了声称的"机理"。
-5. 理论深度是否与目标期刊录用稿相当（参考 /home/luck/xzy/0970project/venue/theory_depth.md，若存在）；过浅或过深都要指出。
+5. 理论深度是否与目标期刊录用稿相当（参考 `{{CIVMAT2_PROJECT}}/venue/theory_depth.md`，若存在；默认带：正文 15–30 式、1 条机理新关系）；过浅或过深都要指出。
 
 ## 输出（写到调用方指定的 review/ 路径，文件名 R1_theory.md）
 - Summary（3–5 句）

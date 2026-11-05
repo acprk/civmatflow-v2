@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+# civmat2 — single entry point for the civmatflow v2 tools.
+# Resolves the repository root from its own location, so it works from any cwd and
+# through symlinks (install.sh links it into ~/.local/bin).
+#
+#   civmat2 home                          print CIVMAT2_HOME (repo root)
+#   civmat2 init <ws>                     scaffold a direction workspace from templates/
+#   civmat2 template <NAME>               print a template (PREREG, FALSIFY, PROVENANCE, ...)
+#   civmat2 venue ...                     tools/venue_profile.py   (V0 topic map)
+#   civmat2 depth ...                     tools/depth_tally.py     (V0 theory depth)
+#   civmat2 fetch ...                     tools/fetch_fulltext.py  (V2 legal full text)
+#   civmat2 cards ...                     tools/pdf2cards.py       (V3 literature cards)
+#   civmat2 holdout freeze|check|seal|evaluate|status ...   tools/holdout_guard.py (V4/V6)
+#   civmat2 residuals ...                 tools/residual_map.py    (V4 residual map + ICC)
+#   civmat2 numcheck fill|check ...       tools/number_check.py    (V8/V9)
+#   civmat2 refcheck ...                  tools/refcheck.py        (V9/V11)
+#   civmat2 style <key> DRAFT [...]       style/<key>/style_check.py
+#   civmat2 package ...                   tools/build_package.py   (V11)
+#   civmat2 codex C# N [LANE]             codex/run_iter.sh        (miner iteration)
+#   civmat2 test                          tests/smoke_test.sh
+#   civmat2 env                           print the resolved environment
+set -euo pipefail
+SELF="$(readlink -f "${BASH_SOURCE[0]}")"
+export CIVMAT2_HOME="${CIVMAT2_HOME:-$(cd "$(dirname "$SELF")/.." && pwd)}"
+# optional local settings written by install.sh (gitignored)
+if [ -f "$CIVMAT2_HOME/.civmat2.env" ]; then . "$CIVMAT2_HOME/.civmat2.env"; fi
+export CIVMAT2_PYTHON="${CIVMAT2_PYTHON:-python3}"
+export CIVMAT2_PROJECT="${CIVMAT2_PROJECT:-$PWD}"
+T="$CIVMAT2_HOME/tools"
+
+usage() { sed -n '2,22p' "$SELF" | sed 's/^# \{0,1\}//'; }
+
+cmd="${1:-}"; [ $# -gt 0 ] && shift
+case "$cmd" in
+  home) echo "$CIVMAT2_HOME" ;;
+  env) printf 'CIVMAT2_HOME=%s\nCIVMAT2_PROJECT=%s\nCIVMAT2_PYTHON=%s\n' "$CIVMAT2_HOME" "$CIVMAT2_PROJECT" "$CIVMAT2_PYTHON" ;;
+  venue) exec "$CIVMAT2_PYTHON" "$T/venue_profile.py" "$@" ;;
+  depth) exec "$CIVMAT2_PYTHON" "$T/depth_tally.py" "$@" ;;
+  fetch) exec "$CIVMAT2_PYTHON" "$T/fetch_fulltext.py" "$@" ;;
+  cards) exec "$CIVMAT2_PYTHON" "$T/pdf2cards.py" "$@" ;;
+  holdout) exec "$CIVMAT2_PYTHON" "$T/holdout_guard.py" "$@" ;;
+  residuals) exec "$CIVMAT2_PYTHON" "$T/residual_map.py" "$@" ;;
+  numcheck) exec "$CIVMAT2_PYTHON" "$T/number_check.py" "$@" ;;
+  refcheck) exec "$CIVMAT2_PYTHON" "$T/refcheck.py" "$@" ;;
+  package) exec "$CIVMAT2_PYTHON" "$T/build_package.py" "$@" ;;
+  style)
+    key="${1:-}"; [ -n "$key" ] || { echo "usage: civmat2 style <key> DRAFT [--json] [--sections ...]"; ls "$CIVMAT2_HOME/style"; exit 2; }
+    shift
+    [ -f "$CIVMAT2_HOME/style/$key/style_check.py" ] || { echo "no style key '$key' (see $CIVMAT2_HOME/style/INDEX.md)"; exit 2; }
+    exec "$CIVMAT2_PYTHON" "$CIVMAT2_HOME/style/$key/style_check.py" "$@" ;;
+  codex) exec bash "$CIVMAT2_HOME/codex/run_iter.sh" "$@" ;;
+  test) exec bash "$CIVMAT2_HOME/tests/smoke_test.sh" "$@" ;;
+  template)
+    name="${1:-}"; f="$CIVMAT2_HOME/templates/$name"
+    [ -n "$name" ] || { ls "$CIVMAT2_HOME/templates" "$CIVMAT2_HOME/templates/codex"; exit 0; }
+    for cand in "$f" "$f.md" "$CIVMAT2_HOME/templates/codex/$name" "$CIVMAT2_HOME/templates/codex/$name.txt"; do
+      [ -f "$cand" ] && { cat "$cand"; exit 0; }
+    done
+    echo "no template '$name'"; ls "$CIVMAT2_HOME/templates"; exit 2 ;;
+  init)
+    ws="${1:-}"; [ -n "$ws" ] || { echo "usage: civmat2 init <workspace-dir> [--force]"; exit 2; }
+    force="${2:-}"
+    [ -e "$ws" ] && [ "$force" != "--force" ] && { echo "$ws exists (use --force to add missing files only)"; exit 2; }
+    mkdir -p "$ws"/{data/raw,data/processed,lit/pdfs,lit/text,lit/cards,notes,ideas/checks,ideas/diag,code,results,expected_output,paper/figures,paper/latex,review}
+    TPL="$CIVMAT2_HOME/templates"
+    put() { [ -e "$ws/$2" ] || cp "$TPL/$1" "$ws/$2"; }
+    put DIRECTION_CARD.md DIRECTION.md; put BASELINES.md BASELINES.md; put FALSIFY.md FALSIFY.md; put PREREG.md PREREG.md
+    put G1_REPORT.md notes/G1_REPORT.md; put IDEA.md ideas/IDEA_TEMPLATE.md; put PROVENANCE.md data/raw/PROVENANCE_TEMPLATE.md
+    put LIT_CARD.md lit/cards/CARD_TEMPLATE.md; put OUTLINE.md paper/OUTLINE.md; put CLAIM_EVIDENCE.csv paper/CLAIM_EVIDENCE.csv
+    put NUMBERS_USED.json paper/NUMBERS_USED.json; put 作者待办.md paper/作者待办.md; put response_table.md review/response_table.md
+    put run_all.sh code/run_all.sh; chmod +x "$ws/code/run_all.sh"
+    echo "workspace scaffolded at $ws (templates copied; nothing is pre-filled)"
+    find "$ws" -type f | sort ;;
+  ""|-h|--help|help) usage ;;
+  *) echo "unknown command: $cmd"; usage; exit 2 ;;
+esac

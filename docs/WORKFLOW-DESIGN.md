@@ -178,5 +178,31 @@ submit/
 
 - 10/28 **工作流落地**：`0970project/civmatflow2/`——11 个 skill（已软链到 ~/xzy/.claude/skills）、新增 agent civmat-scout/librarian/packager（与已有 theorist、style-distiller、civrev×6、两个风格写作 agent 合计 13 个）、4 个工具（fetch_fulltext、pdf2cards、holdout_guard、build_package；holdout_guard 与 build_package 冒烟测试通过）、2 个 Workflow 脚本（direction、review）、README/install.sh。
 
-## 11. 待讨论决策点
-见对话。
+## 11. 待讨论决策点（截至 2026-11-05 仍开放）
+1. 下一主方向：D3 孔溶液离子专属碱吸附（V5 已启动，基准本身预注册为 E 型交付物）还是 C4 收割卡中的新候选；两者都须先过 G0.5 与可检测性。
+2. D4 关闭后是否以 E 型（按来源分组验证基准）重投：须先对 Saqif 2026 做逐项差异表，窄主张才可。
+3. 风格库 GS 修订标准（§8.4 修订版）是否对 efm-sizeeffect 补做盲判；ms-cemchem 需用高语言质量留出篇重测。
+4. 付费文献：维持"用户不提供"；关键竞品不可读即早弃（教训 10）。
+5. Codex 并行进程数（4–5）与单进程 3 线程上限是否维持。
+
+## 12. 实现对照（仓库 v1，2026-11-05）
+设计稿 §3–§9 中的每一项在仓库中的落点；"—"表示有意不实现或由他项覆盖。路径以仓库根为准，安装后由 `install.sh` 渲染为绝对路径。
+
+| 设计项 | 实现 | 备注 |
+|---|---|---|
+| §3 V0 画像 / 深度标定 | `skills/civmat2-venue`、`tools/venue_profile.py`（Crossref/OpenAlex 拉取、标题分类、topic 表、人工抽样判对率）、`tools/depth_tally.py` | 分类精度须用 `venue score` 报告 |
+| §3 V1 / G0 / G0.5 / 可检测性 | `skills/civmat2-direction`、`agents/civmat-scout`、`workflows/civmat2-direction.js`、`templates/DIRECTION_CARD.md`、`templates/PROVENANCE.md` | 可检测性由 `tools/residual_map.py` 的 ICC(1) 判定 |
+| §3 V2–V3 | `skills/civmat2-lit`、`agents/civmat-librarian`、`tools/fetch_fulltext.py`（§8.0 合法管线）、`tools/pdf2cards.py`、`templates/LIT_CARD.md`、`templates/BASELINES.md` | |
+| §3 V4 / G1 | `skills/civmat2-sota`、`tools/holdout_guard.py freeze/check` + `load_calibration`、`tools/residual_map.py`、`workflows/civmat2-sota.js`、`templates/G1_REPORT.md` | 留出先冻结（教训 4） |
+| §3 V5 / G2 | `skills/civmat2-idea`、`agents/civmat-theorist`、`agents/civrev-adversary`、`workflows/civmat2-idea.js`（stage ideate）、`templates/IDEA.md`、`templates/FALSIFY.md` | §4 的 `civmat-falsifier` 由 `civrev-adversary` 承担 |
+| §3 V6 / G3 | `skills/civmat2-prereg`、`tools/holdout_guard.py seal/evaluate/status`（fail-closed、`HOLDOUT_CONSUMED`、`FROZEN_MANIFEST.json`）、`templates/PREREG.md` | 教训 5 |
+| §3 V7 | `workflows/civmat2-idea.js`（stage falsify）、`agents/civrev-adversary` + `civrev-experiment` | |
+| §3 V2s / §8 / GS | `agents/civmat-style-distiller`、`style/<key>/`（两套已蒸馏）、`style/INDEX.md`、`agents/<key>-writer.md` | 语料 PDF/文本不入库 |
+| §3 V8–V9 | `skills/civmat2-write`、`workflows/civmat2-write.js`、`tools/number_check.py`（占位回填 + 数字可追溯）、`tools/refcheck.py`、`templates/{OUTLINE.md,CLAIM_EVIDENCE.csv,NUMBERS_USED.json,作者待办.md}` | |
+| §3 V10 / §7 审稿团 | `skills/civmat2-review`、`agents/civrev-theory/experiment/domain/writing/adversary/meta`、`workflows/civmat2-review.js`、`templates/response_table.md` | Codex 两轮用 `codex exec` 手动派 |
+| §3 V11 / §9 投稿包 | `skills/civmat2-package`、`agents/civmat-packager`、`tools/build_package.py` | 非再分发许可只放 PROVENANCE + 下载脚本 |
+| §4 workflow `civmat-sota.js` / `civmat-idea.js` / `civmat-paper.js` | `workflows/civmat2-sota.js`、`civmat2-idea.js`、`civmat2-write.js` + `civmat2-review.js` | |
+| Codex 挖掘循环 | `skills/civmat2-codex-loop`、`codex/PLAYBOOK.md`、`codex/run_iter.sh`、`templates/codex/*` | 模型/档位/超时由环境变量控制 |
+| 统一入口与安装 | `bin/civmat2`、`install.sh`（渲染占位符）、`tests/smoke_test.sh`、`Makefile`、`.github/workflows/smoke.yml` | |
+
+未实现、留待后续：Elsevier/Springer TDM 之外的出版社 API；审稿 Codex 两轮的自动编排；`venue_profile` 的摘要级分类器（Crossref 无 Elsevier 摘要）；写作 agent 的自动 GS 盲测脚本（目前由 style-distiller 手动执行）。
